@@ -13,7 +13,6 @@ export class CustodyTransferSaga {
         nextEvent: EventType,
     ): void {
 
-        // IoT monitoring event does not change custody.
         if (
             nextEvent === EventType.TEMPERATURE_MONITORED ||
             previousEvent === EventType.TEMPERATURE_MONITORED
@@ -21,7 +20,6 @@ export class CustodyTransferSaga {
             return;
         }
 
-        // First event
         if (previousEvent === null) {
             return;
         }
