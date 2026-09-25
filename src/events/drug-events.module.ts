@@ -37,22 +37,17 @@ import { LedgerModule } from '../ledger/ledger.module';
     providers: [
         DrugEventsService,
 
-        // Publisher
         EventPublisher,
 
-        // Observer
         AuditObserver,
 
-        // Strategies
         ManufacturedStrategy,
         ShippedStrategy,
         ReceivedStrategy,
         TemperatureMonitoredStrategy,
 
-        // Strategy Factory
         EventStrategyFactory,
 
-        // Saga
         CustodyTransferSaga,
     ],
 
