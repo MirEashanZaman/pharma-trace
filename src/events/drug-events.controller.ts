@@ -17,7 +17,6 @@ export class DrugEventsController {
         private readonly drugEventsService: DrugEventsService,
     ) { }
 
-    // COMMAND - Create Event
     @Post()
     create(
         @Body() body: CreateDrugEventDto,
@@ -27,13 +26,11 @@ export class DrugEventsController {
         );
     }
 
-    // QUERY - Get All Events
     @Get()
     findAll() {
         return this.drugEventsService.findAll();
     }
 
-    // QUERY - Get Events by Drug Serial Number
     @Get(':serialNumber')
     findBySerialNumber(
         @Param('serialNumber') serialNumber: string,
@@ -43,7 +40,6 @@ export class DrugEventsController {
         );
     }
 
-    // DELETE - Delete Events by Drug Serial Number
     @Delete(':serialNumber')
     deleteBySerialNumber(
         @Param('serialNumber') serialNumber: string,
