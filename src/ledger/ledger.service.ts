@@ -15,10 +15,6 @@ export interface LedgerEntry {
 export class LedgerService {
     private readonly ledger: LedgerEntry[] = [];
 
-    // ==========================================
-    // ADD EVENT TO LEDGER
-    // ==========================================
-
     addEvent(
         drugSerialNumber: string,
         eventId: number,
@@ -58,17 +54,9 @@ export class LedgerService {
         return entry;
     }
 
-    // ==========================================
-    // GET COMPLETE LEDGER
-    // ==========================================
-
     getLedger(): LedgerEntry[] {
         return this.ledger;
     }
-
-    // ==========================================
-    // VERIFY LEDGER
-    // ==========================================
 
     verifyLedger(): boolean {
         for (let i = 0; i < this.ledger.length; i++) {
@@ -79,7 +67,6 @@ export class LedgerService {
                     ? 'GENESIS'
                     : this.ledger[i - 1].ledgerHash;
 
-            // Check previous hash
             if (
                 entry.previousHash !==
                 expectedPreviousHash
@@ -87,7 +74,6 @@ export class LedgerService {
                 return false;
             }
 
-            // Recalculate ledger hash
             const expectedHash = createHash('sha256')
                 .update(
                     JSON.stringify({
@@ -102,7 +88,6 @@ export class LedgerService {
                 )
                 .digest('hex');
 
-            // Check current hash
             if (
                 entry.ledgerHash !==
                 expectedHash
@@ -114,16 +99,11 @@ export class LedgerService {
         return true;
     }
 
-    // ==========================================
-    // TAMPER TEST
-    // ==========================================
-
     tamperEntry(index: number): boolean {
         if (!this.ledger[index]) {
             return false;
         }
 
-        // Change event hash intentionally
         this.ledger[index].eventHash = 'TAMPERED';
 
         return true;
