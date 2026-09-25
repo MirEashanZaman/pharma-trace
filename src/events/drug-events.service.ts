@@ -43,10 +43,6 @@ export class DrugEventsService {
             LedgerService,
     ) { }
 
-    // ==========================================
-    // CQRS - COMMAND
-    // ==========================================
-
     async executeCreateCommand(
         data: CreateDrugEventDto,
     ) {
@@ -56,14 +52,9 @@ export class DrugEventsService {
         return this.create(command.data);
     }
 
-    // ==========================================
-    // CREATE DRUG EVENT
-    // ==========================================
-
     async create(
         data: CreateDrugEventDto,
     ) {
-        // Find drug
         const drug =
             await this.drugRepository.findOne({
                 where: {
@@ -77,10 +68,6 @@ export class DrugEventsService {
                 `Drug with serial number ${data.drugSerialNumber} not found`,
             );
         }
-
-        // ==========================================
-        // SAGA - Validate custody transition
-        // ==========================================
 
         const previousEventRecord =
             await this.drugEventRepository.findOne({
@@ -104,19 +91,11 @@ export class DrugEventsService {
             data.eventType,
         );
 
-        // ==========================================
-        // Create Event
-        // ==========================================
-
         const event =
             this.drugEventRepository.create({
                 ...data,
                 drug,
             });
-
-        // ==========================================
-        // Generate SHA-256 Event Hash
-        // ==========================================
 
         const eventHash =
             createHash('sha256')
@@ -136,26 +115,14 @@ export class DrugEventsService {
 
         event.eventHash = eventHash;
 
-        // ==========================================
-        // Save Event
-        // ==========================================
-
         const savedEvent =
             await this.drugEventRepository.save(
                 event,
             );
 
-        // ==========================================
-        // Publish Event
-        // ==========================================
-
         this.eventPublisher.publish(
             savedEvent,
         );
-
-        // ==========================================
-        // ADD EVENT TO LEDGER
-        // ==========================================
 
         this.ledgerService.addEvent(
             savedEvent.drugSerialNumber,
@@ -165,10 +132,6 @@ export class DrugEventsService {
 
         return savedEvent;
     }
-
-    // ==========================================
-    // CQRS - QUERY
-    // ==========================================
 
     async executeGetQuery(
         serialNumber: string,
@@ -183,10 +146,6 @@ export class DrugEventsService {
         );
     }
 
-    // ==========================================
-    // GET ALL EVENTS
-    // ==========================================
-
     findAll() {
         return this.drugEventRepository.find({
             relations: {
@@ -198,10 +157,6 @@ export class DrugEventsService {
             },
         });
     }
-
-    // ==========================================
-    // GET EVENTS BY SERIAL NUMBER
-    // ==========================================
 
     findBySerialNumber(
         serialNumber: string,
@@ -221,10 +176,6 @@ export class DrugEventsService {
             },
         });
     }
-
-    // ==========================================
-    // DELETE EVENTS
-    // ==========================================
 
     deleteBySerialNumber(
         serialNumber: string,
