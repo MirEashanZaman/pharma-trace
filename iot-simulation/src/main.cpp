@@ -5,14 +5,12 @@
 const int DHT_PIN = 15;
 DHTesp dht;
 
-// PharmaTrace Constants
 const float MIN_TEMP = 2.0;
 const float MAX_TEMP = 8.0;
 const String DRUG_SERIAL = "DRUG-001";
 const float LATITUDE = 23.8103;
 const float LONGITUDE = 90.4125;
 
-// Wi-Fi & API Configuration
 const char *WIFI_SSID = "Wokwi-GUEST";
 const char *WIFI_PASSWORD = "";
 
@@ -45,7 +43,6 @@ void loop()
 {
   TempAndHumidity data = dht.getTempAndHumidity();
 
-  // Create structured JSON payload
   String jsonPayload = "{";
   jsonPayload += "\"temperature\": " + String(data.temperature, 2) + ", ";
   jsonPayload += "\"humidity\": " + String(data.humidity, 2) + ", ";
@@ -55,11 +52,10 @@ void loop()
 
   Serial.println("Generated Payload: " + jsonPayload);
 
-  // Send HTTP POST request
   if (WiFi.status() == WL_CONNECTED)
   {
     HTTPClient http;
-    http.begin(targetUrl); // SERVER_URL পরিবর্তন করে targetUrl করা হয়েছে
+    http.begin(targetUrl);
     http.addHeader("Content-Type", "application/json");
 
     int httpResponseCode = http.POST(jsonPayload);
@@ -83,12 +79,11 @@ void loop()
     Serial.println("Wi-Fi Disconnected");
   }
 
-  // Threshold Validation
   if (data.temperature < MIN_TEMP || data.temperature > MAX_TEMP)
   {
     Serial.println("⚠️ ALERT: Temperature threshold exceeded!");
   }
 
   Serial.println("-------------------------");
-  delay(10000); // 10-second interval between sending data
+  delay(10000);
 }
