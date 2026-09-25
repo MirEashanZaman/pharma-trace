@@ -12,18 +12,10 @@ export class LedgerController {
         private readonly ledgerService: LedgerService,
     ) { }
 
-    // ==========================================
-    // GET COMPLETE LEDGER
-    // ==========================================
-
     @Get()
     getLedger() {
         return this.ledgerService.getLedger();
     }
-
-    // ==========================================
-    // VERIFY LEDGER
-    // ==========================================
 
     @Get('verify')
     verifyLedger() {
@@ -31,10 +23,6 @@ export class LedgerController {
             valid: this.ledgerService.verifyLedger(),
         };
     }
-
-    // ==========================================
-    // TAMPER TEST
-    // ==========================================
 
     @Get('tamper/:index')
     tamperEntry(
