@@ -1,0 +1,58 @@
+﻿version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: pharma-trace-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: pharma_trace
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d pharma_trace']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./pharma-trace-backend
+      dockerfile: Dockerfile
+    container_name: pharma-trace-backend
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 3500
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: password123
+      DB_NAME: pharma_trace
+      JWT_SECRET: pharma_super_secret_jwt_key_2026
+      BLOCKCHAIN_RPC_URL: http://hardhat-node:8545
+    ports:
+      - '3500:3500'
+
+  frontend:
+    build:
+      context: ./pharma-trace-frontend
+      dockerfile: Dockerfile
+    container_name: pharma-trace-frontend
+    restart: always
+    depends_on:
+      - backend
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:3500
+    ports:
+      - '3000:3000'
+
+volumes:
+  pgdata:
