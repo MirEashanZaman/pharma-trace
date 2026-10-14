@@ -2,6 +2,8 @@
 /dist
 /node_modules
 /build
+/.next
+/out
 
 # Logs
 logs
@@ -14,6 +16,12 @@ lerna-debug.log*
 
 # OS
 .DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+*.pem
+*.key
+*.cert
 
 # Tests
 /coverage
@@ -27,8 +35,8 @@ lerna-debug.log*
 *.launch
 .settings/
 *.sublime-workspace
-
-# IDE - VSCode
+*.sw?
+.pio/
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
@@ -37,14 +45,37 @@ lerna-debug.log*
 
 # dotenv environment variable files
 .env
+.env.development
+.env.test
+.env.production
 .env.development.local
 .env.test.local
 .env.production.local
 .env.local
+.env*.local
+!.env.example
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
 
 # temp directory
 .temp
 .tmp
+.cache/
+.turbo/
+
+# Hardhat & Solidity
+cache/
+artifacts/
+typechain/
+typechain-types/
+*.sqlite
+*.sqlite3
+*.db
 
 # Runtime data
 pids
