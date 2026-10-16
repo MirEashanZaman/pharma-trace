@@ -14,6 +14,7 @@ pharma-trace/
 │   ├── scripts/                           # Solidity compilation pipeline
 │   ├── src/
 │   │   ├── blockchain/                    # Web3 & Ethers.js integration
+│   │   ├── compliance/                    # SOLID Architectural Compliance Engine
 │   │   ├── drugs/                         # Drug Registration Module
 │   │   ├── events/                        # Event Sourcing & Custody Saga Engine
 │   │   ├── iot/                           # IoT Telemetry Checkpoints
