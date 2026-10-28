@@ -1,4 +1,4 @@
-﻿version: '3.8'
+version: '3.8'
 
 services:
   postgres:
@@ -19,6 +19,21 @@ services:
       timeout: 5s
       retries: 5
 
+  redis:
+    image: redis:7-alpine
+    container_name: pharma-trace-redis
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 60 1 --loglevel warning
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
   backend:
     build:
       context: ./pharma-trace-backend
@@ -28,6 +43,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     environment:
       NODE_ENV: production
       PORT: 3500
@@ -36,6 +53,8 @@ services:
       DB_USERNAME: postgres
       DB_PASSWORD: password123
       DB_NAME: pharma_trace
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
       JWT_SECRET: pharma_super_secret_jwt_key_2026
       BLOCKCHAIN_RPC_URL: http://hardhat-node:8545
     ports:
@@ -54,5 +73,18 @@ services:
     ports:
       - '3000:3000'
 
+  load-balancer:
+    image: nginx:1.25-alpine
+    container_name: pharma-trace-lb
+    restart: always
+    ports:
+      - '80:80'
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - backend
+      - frontend
+
 volumes:
   pgdata:
+  redisdata:
