@@ -26,3 +26,4 @@ if %ERRORLEVEL% EQU 0 (
     docker compose logs --tail=50
     exit /b 1
 )
+
