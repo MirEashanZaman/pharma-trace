@@ -110,7 +110,7 @@ PharmaTrace-ES enforces strict Role-Based Access Control (RBAC). For testing and
 | **PHARMACY** | CVS Health Care | `pharmacy@pharma.com` | `123456` | `0x90F79bf6EB2c4f870365E785982E1f101E93b906` |
 | **REGULATOR** | Food and Drug Administration | `regulator@pharma.com` | `123456` | `0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65` |
 | **ADMIN** | PharmaTrace Governance | `admin@pharma.com` | `123456` | `0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266` |
-| **CUSTOMER** | Public Consumer / Patient | `customer@pharma.com` | `123456` | `0xcd3B766CCD5027DE11055150D60447dE35E1008473` |
+| **CUSTOMER** | MirEashan Zaman (Consumer) | `customer@pharma.com` | `123456` | `0xcd3B766CCD5027DE11055150D60447dE35E1008473` |
 
 *Note: Custom enterprise organizations and real Ethereum wallets (MetaMask) can also be registered at any time via the registration portal on `/login`.*
 
