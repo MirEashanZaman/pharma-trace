@@ -4,3 +4,4 @@
 [submodule "pharma-trace-frontend"]
 	path = pharma-trace-frontend
 	url = https://github.com/MirEashanZaman/pharma-trace-frontend.git
+
