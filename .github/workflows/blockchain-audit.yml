@@ -1,0 +1,45 @@
+name: Smart Contract Security Audit
+
+on:
+  push:
+    paths:
+      - 'pharma-trace-backend/contracts/**'
+      - 'pharma-trace-backend/scripts/**'
+  pull_request:
+    paths:
+      - 'pharma-trace-backend/contracts/**'
+      - 'pharma-trace-backend/scripts/**'
+
+jobs:
+  static-security-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: pharma-trace-backend/package-lock.json
+
+      - name: Install Backend Dependencies
+        run: cd pharma-trace-backend && npm ci
+
+      - name: Compile Contracts
+        run: cd pharma-trace-backend && npm run compile:contract
+
+      - name: Run Solhint Linter
+        run: |
+          cd pharma-trace-backend
+          npx solhint 'contracts/**/*.sol' || true
+
+      - name: Run Slither Static Analysis
+        uses: crytic/slither-action@v0.4.0
+        continue-on-error: true
+        with:
+          target: 'pharma-trace-backend'
+          slither-args: '--exclude-dependencies --checklist'
