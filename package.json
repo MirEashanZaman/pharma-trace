@@ -1,0 +1,11 @@
+{
+  "name": "pharma-trace",
+  "version": "1.0.0",
+  "description": "Enterprise Pharmaceutical Track-and-Trace Platform",
+  "private": true,
+  "scripts": {
+    "start": "ts-node index.ts",
+    "test": "npm --prefix pharma-trace-backend test",
+    "build": "npm --prefix pharma-trace-backend run build && npm --prefix pharma-trace-frontend run build"
+  }
+}
