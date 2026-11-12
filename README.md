@@ -16,6 +16,7 @@ The system complies with US FDA 21 CFR Part 11, EU GxP Annex 11, US Drug Supply 
 ---
 
 ## Interactive Presentation & Defense Guide
+
 For an end-to-end walkthrough across all stakeholder roles, seed data profiles, and presentation scripts, refer to the [DEMO_GUIDE.md](DEMO_GUIDE.md).
 
 ---
@@ -99,20 +100,21 @@ flowchart TD
 
 PharmaTrace isolates supply chain permissions using strict Role-Based Access Control (RBAC) across six stakeholder tiers:
 
-| Stakeholder Role | Access Scope | Operational Responsibilities |
-| :--- | :--- | :--- |
-| **Manufacturer** | Commissioning, Bulk Serialization, QC Disposition, Dispatch | Commissions unique GS1 DataMatrix identifiers, signs laboratory purity/pH release certificates, initiates cold-chain custody pipelines, and quarantines unstable lots. |
-| **Distributor** | Logistics & Fleet Operations, Reefers, Manifests | Inspects inbound container seals, manages 2 deg C - 8 deg C vault zones, assigns reefer vehicles, monitors live GPS routes, and generates electronic Bills of Lading (e-BoL). |
-| **Pharmacy** | Dispensary, Prescription Dispensing, Drug Retirement | Verifies inbound shipments against distributor e-BoL manifests, dispenses medication against physician prescription tokens, and decommissions digital twins upon patient handover. |
-| **Regulator** | Compliance Audits, Recalls, Pharmacovigilance | Issues FDA Form 483 facility inspection citations, enforces nationwide Class I/II/III recalls, tracks Adverse Drug Events (ADEs), and runs automated ALCOA+ data integrity analysis. |
-| **Customer** | Public Verification Portal (`/verify`) | Scans 2D DataMatrix packaging barcodes to verify authenticity, active pharmaceutical ingredients, expiry dates, and real-time recall status without accessing private operational data. |
-| **System Administrator** | Platform Governance, Health Probes, Audit Trails | Manages enterprise stakeholder identities, inspects cryptographic hash-chained audit trails, reviews container telemetry, and monitors smart contract gas sponsorship. |
+| Stakeholder Role         | Access Scope                                                | Operational Responsibilities                                                                                                                                                            |
+| :----------------------- | :---------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Manufacturer**         | Commissioning, Bulk Serialization, QC Disposition, Dispatch | Commissions unique GS1 DataMatrix identifiers, signs laboratory purity/pH release certificates, initiates cold-chain custody pipelines, and quarantines unstable lots.                  |
+| **Distributor**          | Logistics & Fleet Operations, Reefers, Manifests            | Inspects inbound container seals, manages 2 deg C - 8 deg C vault zones, assigns reefer vehicles, monitors live GPS routes, and generates electronic Bills of Lading (e-BoL).           |
+| **Pharmacy**             | Dispensary, Prescription Dispensing, Drug Retirement        | Verifies inbound shipments against distributor e-BoL manifests, dispenses medication against physician prescription tokens, and decommissions digital twins upon patient handover.      |
+| **Regulator**            | Compliance Audits, Recalls, Pharmacovigilance               | Issues FDA Form 483 facility inspection citations, enforces nationwide Class I/II/III recalls, tracks Adverse Drug Events (ADEs), and runs automated ALCOA+ data integrity analysis.    |
+| **Customer**             | Public Verification Portal (`/verify`)                      | Scans 2D DataMatrix packaging barcodes to verify authenticity, active pharmaceutical ingredients, expiry dates, and real-time recall status without accessing private operational data. |
+| **System Administrator** | Platform Governance, Health Probes, Audit Trails            | Manages enterprise stakeholder identities, inspects cryptographic hash-chained audit trails, reviews container telemetry, and monitors smart contract gas sponsorship.                  |
 
 ---
 
 ## Core Capabilities and Architecture Modules
 
 ### 1. Smart Contract Suite (Solidity / solc 0.8.26 / viaIR)
+
 - **Autonomous Upkeep Oracle (`ColdChainAutomationOracle.sol`)**: Autonomous Chainlink upkeep contract executing programmatic slashing on `CarrierStakingEscrow.sol` upon verifiable sensor excursion breaches.
 - **Cross-Chain Interoperability (`PharmaCrossChainBridge.sol`)**: Cross-Chain Interoperability Protocol (CCIP) token messenger bridging physical-digital twins across EVM Layer-2 rollups with anti-duplication single-custody guarantees.
 - **Cryptographic Attestation Anchor (`PharmaTraceAttestation.sol`)**: Anchors Keccak-256 batch digests, Merkle root trees, and custody transition states directly to Ethereum Sepolia and Arbitrum.
@@ -124,6 +126,7 @@ PharmaTrace isolates supply chain permissions using strict Role-Based Access Con
 - **Account Abstraction Paymaster (`PharmaPaymaster.sol`)**: ERC-4337 gas sponsorship paymaster validating UserOperations to enable gasless transactions for warehouse operators.
 
 ### 2. Backend Domain Engine (NestJS 11 / TypeORM / PostgreSQL 16 / Redis 7)
+
 - **Distributed Saga Custody Coordinator**: Manages multi-step physical custody handshakes with automated compensating rollback transactions to prevent orphaned shipments during transit failures.
 - **ZK-SNARK Nullifier Registry**: Tracks spent cryptographic proof nullifiers in memory and on-chain to block proof-replay attacks on temperature compliance attestations.
 - **Dual-Gated Security Pipeline**: Authenticates clients via HttpOnly SameSite Secure cookies with automatic fallback to Bearer authorization headers for external microservices.
@@ -134,6 +137,7 @@ PharmaTrace isolates supply chain permissions using strict Role-Based Access Con
 - **Container Health Probes**: Native `/health/live` and `/health/ready` endpoints verifying database connection pools, Redis latency, heap allocations, and process uptime.
 
 ### 3. Web3 Frontend Client (Next.js 14 App Router / Tailwind CSS / DaisyUI)
+
 - **Midnight Navy & Neon Teal Design System**: Built exclusively with Tailwind CSS and DaisyUI (`#0B1220`, `#00D6B4`, `#243247`, `#172638`).
 - **Interactive Provenance DAG**: Dynamic SVG directed acyclic graph visualizer mapping raw ingredient lots, packaging milestones, and custody transitions.
 - **GS1 2D DataMatrix Suite**: Built-in 2D barcode generation, camera QR scanning, audio verification feedback, and multi-format compliance exports (PDF, CSV, JSON).
@@ -144,16 +148,16 @@ PharmaTrace isolates supply chain permissions using strict Role-Based Access Con
 
 ## Design System Palette
 
-| Element | Hex Code | Purpose |
-| :--- | :--- | :--- |
-| Background Base | `#0B1220` | Core application background canvas |
+| Element         | Hex Code  | Purpose                                         |
+| :-------------- | :-------- | :---------------------------------------------- |
+| Background Base | `#0B1220` | Core application background canvas              |
 | Surface Primary | `#172638` | Container panels, modals, and dropdown surfaces |
-| Surface Subtle | `#243247` | Interactive input fields and active cards |
-| Border Default | `#304257` | Structural panel dividers and table boundaries |
-| Accent Neon | `#00D6B4` | Primary actions, branding, and verified badges |
-| Accent Hover | `#00b89a` | Button hover and active states |
-| Text Primary | `#F1F5F9` | High-contrast typography |
-| Text Muted | `#94A3B8` | Metadata, timestamps, and secondary labels |
+| Surface Subtle  | `#243247` | Interactive input fields and active cards       |
+| Border Default  | `#304257` | Structural panel dividers and table boundaries  |
+| Accent Neon     | `#00D6B4` | Primary actions, branding, and verified badges  |
+| Accent Hover    | `#00b89a` | Button hover and active states                  |
+| Text Primary    | `#F1F5F9` | High-contrast typography                        |
+| Text Muted      | `#94A3B8` | Metadata, timestamps, and secondary labels      |
 
 ---
 
@@ -215,17 +219,20 @@ pharma-trace/
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js >= 20.0.0
 - PostgreSQL 16 & Redis 7
 - Docker & Docker Compose (optional for containerized deployments)
 
 ### 1. Clone the Monorepo
+
 ```bash
 git clone --recurse-submodules https://github.com/MirEashanZaman/pharma-trace.git
 cd pharma-trace
 ```
 
 ### 2. Backend Initialization & Seeding
+
 ```bash
 cd pharma-trace-backend
 npm install
@@ -234,17 +241,20 @@ npm run build
 npm run seed
 npm run start:dev
 ```
+
 - REST API: `http://localhost:3500`
 - Swagger Documentation: `http://localhost:3500/api/docs`
 - Health Liveness Probe: `http://localhost:3500/health/live`
 - Health Readiness Probe: `http://localhost:3500/health/ready`
 
 ### 3. Frontend Client Initialization
+
 ```bash
 cd ../pharma-trace-frontend
 npm install
 npm run dev -- -p 3001
 ```
+
 - Web Application: `http://localhost:3001`
 
 ---
@@ -268,19 +278,21 @@ npm run build
 
 ## Regulatory Compliance Matrix
 
-| Regulation | Jurisdiction | Technical Enforcement Mechanism |
-| :--- | :--- | :--- |
-| **US FDA 21 CFR Part 11** | United States | SHA-256 continuous hash-chained audit trails, `ElectronicSignatureGuard`, and immutable event sourcing. |
-| **EU GxP Annex 11** | European Union | High-availability Redis caching, container health probes, and audit chain verification. |
-| **US DSCSA Title II** | United States | GS1-128 / DataMatrix serialization, EPCIS 2.0 JSON-LD events, and on-chain Merkle batch attestations. |
-| **WHO TRS 961** | Global | Multi-probe medianized consensus, Chainlink automation oracle, and Groth16 zero-knowledge verifier. |
+| Regulation                | Jurisdiction   | Technical Enforcement Mechanism                                                                         |
+| :------------------------ | :------------- | :------------------------------------------------------------------------------------------------------ |
+| **US FDA 21 CFR Part 11** | United States  | SHA-256 continuous hash-chained audit trails, `ElectronicSignatureGuard`, and immutable event sourcing. |
+| **EU GxP Annex 11**       | European Union | High-availability Redis caching, container health probes, and audit chain verification.                 |
+| **US DSCSA Title II**     | United States  | GS1-128 / DataMatrix serialization, EPCIS 2.0 JSON-LD events, and on-chain Merkle batch attestations.   |
+| **WHO TRS 961**           | Global         | Multi-probe medianized consensus, Chainlink automation oracle, and Groth16 zero-knowledge verifier.     |
 
 ---
 
 ## Author & Engineering Credits
+
 Designed and developed by **Mir Eashan Zaman** as an enterprise-grade decentralized pharmaceutical supply chain and compliance platform.
 
 ---
 
 ## License
+
 This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
