@@ -22,6 +22,10 @@ Desktop.ini
 *.pem
 *.key
 *.cert
+*.pfx
+*.p12
+*.keystore
+service-account*.json
 
 # Tests
 /coverage
@@ -73,6 +77,13 @@ cache/
 artifacts/
 typechain/
 typechain-types/
+*.r1cs
+*.zkey
+*.wtns
+*.sym
+*_js/
+slither-report.json
+crytic-export/
 *.sqlite
 *.sqlite3
 *.db
@@ -88,7 +99,9 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 dump.rdb
 .eslintcache
+.prettiercache
 docker-compose.override.yml
 test-results/
 playwright-report/
 blob-report/
+**/.pio/
