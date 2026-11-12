@@ -1,0 +1,7 @@
+*.bat linguist-vendored=true
+*.sh linguist-vendored=true
+scripts/** linguist-vendored=true
+ran.bat linguist-vendored=true
+nginx.conf linguist-documentation=true
+docker-compose.yml linguist-documentation=true
+index.ts linguist-language=TypeScript
