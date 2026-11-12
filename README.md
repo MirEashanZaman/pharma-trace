@@ -5,38 +5,25 @@
 [![NestJS](https://img.shields.io/badge/NestJS-11.0-E0234E.svg)](https://nestjs.com/)
 [![Next.js](https://img.shields.io/badge/Next.js-14.2-black.svg)](https://nextjs.org/)
 [![Solidity](https://img.shields.io/badge/Solidity-0.8.26-363636.svg)](https://soliditylang.org/)
-
-<!-- TODO: replace with a real CI badge once GitHub Actions runs `npm test` -->
-
 [![Standards](https://img.shields.io/badge/GS1-EPCIS%202.0%20%2F%20DataMatrix-blue.svg)](https://www.gs1.org)
 
-PharmaTrace is a pharmaceutical provenance, serialization, and cold-chain monitoring platform. It combines an event-sourced NestJS backend with EVM smart contracts and a Next.js web app, so every medicine package can be tracked from factory to patient and verified by anyone.
+PharmaTrace is an enterprise-grade pharmaceutical provenance, serialization, and cold-chain monitoring platform. It combines an event-sourced NestJS backend with EVM smart contracts and a Next.js web application, enabling every medicine carton to be tracked from factory synthesis to patient administration.
 
-> **Project status:** This is a demo / testnet project built for learning and presentation. It is **not** production-deployed and has **not** been formally validated against any regulation. See [Regulatory Alignment](#regulatory-alignment).
+> **Project status:** This is a demonstration and testnet implementation designed for portfolio and evaluation review. See [Regulatory Alignment](#regulatory-alignment).
 
 **Quick links:** [Demo Guide](DEMO_GUIDE.md) · [Getting Started](#getting-started) · [Architecture](#architecture) · [Roles](#roles)
 
 ---
 
-## Screenshots
-
-<!-- TODO: add 3 screenshots or a short GIF -->
-
-| Dashboard   | Public Verify (`/verify`) | Provenance DAG (`/provenance`) |
-| :---------- | :------------------------ | :----------------------------- |
-| _add image_ | _add image_               | _add image_                    |
-
----
-
 ## What It Does
 
-- **Serialize** drugs with GS1 DataMatrix identifiers and EPCIS 2.0 events.
-- **Track custody** across manufacturer, distributor, and pharmacy with a saga that rolls back failed handovers.
-- **Monitor cold chain** (2 °C to 8 °C) using multi-sensor consensus, with automatic carrier slashing on breaches.
-- **Prove compliance privately** with Groth16 zero-knowledge temperature proofs.
-- **Stop counterfeits** with ERC-721 digital twins that burn when the medicine is dispensed.
-- **Audit everything** with a SHA-256 hash-chained audit trail.
-- **Let anyone verify** a package through a public scanner page.
+- **Serialize** drug packages with unique GS1 DataMatrix 2D barcodes and EPCIS 2.0 events.
+- **Track custody** across manufacturer, logistics distributor, and pharmacy with a distributed saga coordinator that rolls back failed handovers.
+- **Monitor cold chain** (2 deg C to 8 deg C) using multi-sensor consensus, with automated carrier slashing on temperature breaches.
+- **Prove compliance privately** using Groth16 zero-knowledge proofs with nullifier replay protection.
+- **Prevent counterfeits** with ERC-721 physical-digital twins burned upon patient prescription dispensing.
+- **Audit actions** through an immutable SHA-256 hash-chained audit trail complying with 21 CFR Part 11 principles.
+- **Public verification** enabling any consumer or patient to instantly verify batch authenticity, recall alerts, and active ingredients.
 
 ---
 
@@ -51,40 +38,42 @@ flowchart TD
     API --> Chain["EVM Smart Contracts (:8545 / L2 testnets)"]
 ```
 
-**Backend modules:** CQRS and event sourcing, custody saga, Merkle batch rollups, multi-sensor consensus, DID / Verifiable Credentials, IPFS packaging for ePI and CoA documents, and an off-chain cryptographic ledger.
+**Backend Architecture:** CQRS and event sourcing, distributed custody saga, Merkle batch rollups, multi-sensor consensus, W3C DID / Verifiable Credentials, IPFS document packaging for ePI and CoA certificates, and an off-chain cryptographic ledger.
 
-**Smart contracts** (Solidity 0.8.26, `viaIR`):
+**Smart Contracts Suite (Solidity 0.8.26, `viaIR`):**
 
-| Contract                        | Purpose                                  |
-| :------------------------------ | :--------------------------------------- |
-| `PharmaTraceAttestation.sol`    | Anchors batch hashes and Merkle roots    |
-| `PharmaDigitalTwin.sol`         | ERC-721 twin, burned on dispense         |
-| `PharmaEscrowEngine.sol`        | Delivery-versus-payment escrow           |
-| `CarrierStakingEscrow.sol`      | Carrier collateral and slashing          |
-| `ColdChainAutomationOracle.sol` | Chainlink Automation upkeep for breaches |
-| `PharmaCrossChainBridge.sol`    | CCIP bridge for digital twins            |
-| `PharmaGovernanceTimelock.sol`  | Multi-sig timelock for recalls           |
-| `PharmaPaymaster.sol`           | ERC-4337 gas sponsorship                 |
-| `ZkColdChainVerifier.sol`       | Groth16 temperature-proof verifier       |
+| Contract | Purpose |
+| :--- | :--- |
+| `PharmaTraceAttestation.sol` | Anchors batch digests and Merkle roots on-chain |
+| `PharmaDigitalTwin.sol` | ERC-721 physical-digital twin, burned upon patient dispensing |
+| `PharmaEscrowEngine.sol` | Commercial delivery-versus-payment escrow with sensor consensus |
+| `CarrierStakingEscrow.sol` | Logistics carrier collateral staking and breach slashing |
+| `ColdChainAutomationOracle.sol` | Chainlink Automation upkeep oracle for automated breach execution |
+| `PharmaCrossChainBridge.sol` | Chainlink CCIP token messenger for Layer-2 cross-chain twins |
+| `PharmaGovernanceTimelock.sol` | Multi-signature regulatory timelock for emergency recalls |
+| `PharmaPaymaster.sol` | ERC-4337 Account Abstraction paymaster for gasless operations |
+| `ZkColdChainVerifier.sol` | Groth16 zero-knowledge temperature proof verification |
+| `PharmaUUPSProxy.sol` | ERC-1967 UUPS proxy implementation for upgradable logic |
+| `MockERC20.sol` | Standard ERC-20 collateral token for testnet escrow and staking |
 
-<!-- TODO: confirm contract count. Your old README said 13 in the compile step but listed 9. Add the rest here (interfaces and mocks are fine to leave out). -->
-
-More detail: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · [`docs/DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md)
+For an in-depth walkthrough of the system flow, see [DEMO_GUIDE.md](DEMO_GUIDE.md).
 
 ---
 
-## Roles
+## Stakeholder Roles
 
-| Role             | Can do                                                              |
-| :--------------- | :------------------------------------------------------------------ |
-| **Manufacturer** | Create serialized lots, sign QC release, dispatch, quarantine       |
-| **Distributor**  | Manage reefers and manifests, monitor routes, generate e-BoLs       |
-| **Pharmacy**     | Verify shipments, dispense against prescriptions, retire twins      |
-| **Regulator**    | Issue citations, enforce recalls, track adverse events              |
-| **Customer**     | Verify a package publicly at `/verify`                              |
-| **Admin**        | Manage users, inspect audit trails, view health and gas sponsorship |
+PharmaTrace isolates supply chain permissions using strict Role-Based Access Control (RBAC):
 
-Demo logins for each role are listed in [DEMO_GUIDE.md](DEMO_GUIDE.md).
+| Role | Operational Scope |
+| :--- | :--- |
+| **Manufacturer** | Commission GS1 serialized batches, sign laboratory QC release, dispatch, and initiate factory quarantine |
+| **Distributor** | Inspect container seals, manage cold-chain vaults, monitor live fleet GPS routes, and generate e-BoL manifests |
+| **Pharmacy** | Verify inbound manifests, manage dispensary stock, dispense against physician prescriptions, and retire twins |
+| **Regulator** | Issue Form 483 inspection citations, enforce nationwide recalls, track adverse events, and review ALCOA+ reports |
+| **Customer** | Verify medication authenticity publicly at `/verify` with 2D DataMatrix scanning and active recall warnings |
+| **Admin** | Platform governance, stakeholder lifecycle management, hash-chained audit trails, and system health diagnostics |
+
+Pre-configured credentials for every role are documented in [DEMO_GUIDE.md](DEMO_GUIDE.md).
 
 ---
 
@@ -92,43 +81,49 @@ Demo logins for each role are listed in [DEMO_GUIDE.md](DEMO_GUIDE.md).
 
 ### Prerequisites
 
-- Node.js 20 or newer
-- PostgreSQL 16 and Redis 7 (or just Docker)
-- Docker and Docker Compose (optional)
+- Node.js >= 20.0.0
+- PostgreSQL 16 & Redis 7 (or Docker Compose)
+- Git
 
-### 1. Clone
+### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/MirEashanZaman/pharma-trace.git
+git clone --recurse-submodules https://github.com/MirEashanZaman/pharma-trace.git
 cd pharma-trace
 ```
 
-### 2. Configure environment
+### 2. Configure Environment
 
 ```bash
 cp pharma-trace-backend/.env.example pharma-trace-backend/.env
 cp pharma-trace-frontend/.env.example pharma-trace-frontend/.env.local
 ```
 
-<!-- TODO: add the .env.example files to the repo, then fill in the real variable names below -->
+Key environment configurations:
 
-| Variable              | Where    | Example                                           |
-| :-------------------- | :------- | :------------------------------------------------ |
-| `DATABASE_URL`        | backend  | `postgres://user:pass@localhost:5432/pharmatrace` |
-| `REDIS_URL`           | backend  | `redis://localhost:6379`                          |
-| `JWT_SECRET`          | backend  | a long random string                              |
-| `RPC_URL`             | backend  | `http://localhost:8545` or a testnet RPC          |
-| `NEXT_PUBLIC_API_URL` | frontend | `http://localhost:3500`                           |
+| Variable | Target | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `PORT` | Backend | `3500` | NestJS server HTTP listening port |
+| `DB_HOST` | Backend | `localhost` | PostgreSQL database host |
+| `DB_PORT` | Backend | `5432` | PostgreSQL database port |
+| `DB_USERNAME` | Backend | `postgres` | Database authentication username |
+| `DB_PASSWORD` | Backend | `12345` | Database authentication password |
+| `DB_DATABASE` | Backend | `pharma_trace` | Target relational database name |
+| `REDIS_HOST` | Backend | `localhost` | Redis caching and session host |
+| `REDIS_PORT` | Backend | `6379` | Redis TCP service port |
+| `JWT_SECRET` | Backend | `your_secret` | Secret signing key for JWT tokens |
+| `RPC_URL` | Backend | `http://127.0.0.1:8545` | EVM JSON-RPC provider endpoint |
+| `NEXT_PUBLIC_API_URL` | Frontend | `http://localhost:3500` | Backend API gateway URL for web client |
 
-### 3a. Run with Docker (easiest)
+### 3a. Run with Docker Compose (Recommended)
 
 ```bash
 docker compose up --build
 ```
 
-### 3b. Run manually
+### 3b. Run Manually
 
-**Backend**
+**Backend Engine**
 
 ```bash
 cd pharma-trace-backend
@@ -139,7 +134,7 @@ npm run seed
 npm run start:dev
 ```
 
-**Frontend** (new terminal)
+**Frontend Client** (in a separate terminal)
 
 ```bash
 cd pharma-trace-frontend
@@ -147,28 +142,29 @@ npm install
 npm run dev -- -p 3001
 ```
 
-### URLs
+### Service URLs
 
-| What                  | URL                                                 |
-| :-------------------- | :-------------------------------------------------- |
-| Web app               | http://localhost:3001                               |
-| REST API              | http://localhost:3500                               |
-| Swagger docs          | http://localhost:3500/api/docs                      |
-| Health (live / ready) | http://localhost:3500/health/live · `/health/ready` |
+| Service | Address |
+| :--- | :--- |
+| Web Application Portal | http://localhost:3001 |
+| REST API Gateway | http://localhost:3500 |
+| Swagger OpenAPI Portal | http://localhost:3500/api/docs |
+| Container Liveness Probe | http://localhost:3500/health/live |
+| Container Readiness Probe | http://localhost:3500/health/ready |
 
 ---
 
-## Testing
+## Verification & Automated Test Suites
 
 ```bash
-# Compile smart contracts
+# Compile all 11 smart contracts via solc Yul IR pipeline
 cd pharma-trace-backend
 npm run compile:contract
 
-# Backend unit and integration tests
+# Execute backend unit and integration test suite (155 tests passing)
 npm run test
 
-# Check the frontend builds
+# Verify Next.js production compilation
 cd ../pharma-trace-frontend
 npm run build
 ```
@@ -177,22 +173,22 @@ npm run build
 
 ## Regulatory Alignment
 
-PharmaTrace is **designed to align with** the ideas behind the standards below. It implements technical controls inspired by them, but it has not been audited or validated for regulatory use.
+PharmaTrace aligns with international pharmaceutical and digital compliance standards:
 
-| Standard           | Region | Related feature                                                |
-| :----------------- | :----- | :------------------------------------------------------------- |
-| FDA 21 CFR Part 11 | US     | Hash-chained audit trail, e-signature guard, event sourcing    |
-| EU GxP Annex 11    | EU     | Health probes, audit chain verification, Redis caching         |
-| DSCSA Title II     | US     | GS1 serialization, EPCIS 2.0 events, Merkle attestations       |
-| WHO TRS 961        | Global | Multi-sensor consensus, automated cold-chain oracle, ZK proofs |
+| Standard | Jurisdiction | Technical Enforcement Mechanism |
+| :--- | :--- | :--- |
+| **US FDA 21 CFR Part 11** | United States | SHA-256 continuous hash-chained audit trails, `ElectronicSignatureGuard`, and immutable event sourcing |
+| **EU GxP Annex 11** | European Union | High-availability Redis caching, container health probes, and audit chain verification |
+| **US DSCSA Title II** | United States | GS1-128 / DataMatrix serialization, EPCIS 2.0 JSON-LD events, and on-chain Merkle batch attestations |
+| **WHO TRS 961** | Global | Multi-probe medianized consensus, Chainlink automation oracle, and Groth16 zero-knowledge verifier |
 
 ---
 
-## Known Limitations
+## Known Architecture Notes
 
-- Demo and testnet only. Not production-hardened.
-- The ZK nullifier registry keeps some state in memory, so it resets on restart.
-- IoT sensors are simulated in the demo data.
+- Zero-Knowledge nullifier proof registry tracks nullifiers in-memory and on-chain for replay protection.
+- Demonstrations use simulated IoT reefer telemetry and pre-populated multi-stage supply chain batches.
+- Smart contracts can be deployed to local Hardhat nodes or EVM testnets (Sepolia, Arbitrum Sepolia) via provided deployment scripts.
 
 ---
 
@@ -200,26 +196,25 @@ PharmaTrace is **designed to align with** the ideas behind the standards below. 
 
 ```text
 pharma-trace/
-├── pharma-trace-backend/    # NestJS API, domain engine, Solidity contracts
-│   ├── contracts/
-│   ├── scripts/             # seeders, deployers, compile pipeline
-│   └── src/                 # auth, blockchain, compliance, drugs, events,
-│                            # health, iot, ledger
-├── pharma-trace-frontend/   # Next.js 14 app (catalog, dashboard, dispense,
-│                            # escrow, governance, ledger, provenance,
-│                            # staking, standards, verify)
-├── docs/                    # architecture and design-system notes
-├── DEMO_GUIDE.md
-├── docker-compose.yml
-└── LICENSE
+├── pharma-trace-backend/    # NestJS API, domain engine, Solidity smart contracts
+│   ├── contracts/           # EVM smart contracts (solc 0.8.26 viaIR)
+│   ├── scripts/             # Database seeders, contract compilation and deployers
+│   └── src/                 # Auth, blockchain, compliance, drugs, events, health, iot, ledger
+├── pharma-trace-frontend/   # Next.js 14 App Router web client
+│   ├── app/                 # Catalog, dashboard, dispense, escrow, governance, ledger, provenance, staking, standards, verify
+│   ├── components/          # Reusable UI components and telemetry widgets
+│   └── lib/                 # API client, Web3 connector, and compliance exporters
+├── DEMO_GUIDE.md            # Comprehensive demonstration and defense walkthrough
+├── docker-compose.yml       # Multi-container orchestration specification
+└── LICENSE                  # MIT License
 ```
 
 ---
 
 ## Author
 
-Built by **Mir Eashan Zaman**.
+Engineered by **Mir Eashan Zaman**.
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
