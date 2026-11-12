@@ -1,4 +1,4 @@
-# PharmaTrace Platform Demonstration & Defense Guide
+# PharmaTrace Platform
 
 ## Executive Summary
 PharmaTrace is an enterprise decentralized pharmaceutical track-and-trace system built to enforce FDA 21 CFR Part 11, EU GxP Annex 11, and the US Drug Supply Chain Security Act (DSCSA Title II). The platform integrates Distributed Saga custody handshakes, GS1 EPCIS 2.0 serialization, Groth16 Zero-Knowledge cold-chain proofs, ERC-4337 Account Abstraction gas sponsorship, and EVM smart contract Merkle rollups.
