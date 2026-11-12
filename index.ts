@@ -10,11 +10,11 @@ function runProcess(name: string, command: string, args: string[], cwd: string):
         stdio: 'inherit',
     });
 
-    proc.on('error', (err) => {
+    proc.on('error', (err: any) => {
         console.error(`Process ${name} encountered an error:`, err);
     });
 
-    proc.on('exit', (code) => {
+    proc.on('exit', (code: number | null) => {
         if (code !== 0 && code !== null) {
             console.error(`Process ${name} exited with code ${code}`);
         }
@@ -25,7 +25,7 @@ function runProcess(name: string, command: string, args: string[], cwd: string):
 }
 
 function launchPlatform(): void {
-    const rootDir = __dirname;
+    const rootDir = typeof __dirname !== 'undefined' ? __dirname : process.cwd();
     const backendDir = path.join(rootDir, 'pharma-trace-backend');
     const frontendDir = path.join(rootDir, 'pharma-trace-frontend');
 
