@@ -105,3 +105,10 @@ test-results/
 playwright-report/
 blob-report/
 **/.pio/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
